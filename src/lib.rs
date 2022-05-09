@@ -295,7 +295,7 @@ pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     let accum2: Simd<u16,N> = accum.cast();
     differences += accum2.reduce_sum() as usize;
     //let z = m1.iter().copied().zip(m2.iter().copied());
-    //differences += p1.iter().zip(p2.iter()).filter( |(a,b)| a != b ).count();
+    differences += p1.iter().zip(p2.iter()).filter( |(a,b)| a != b ).count();
     differences += s1.iter().zip(s2.iter()).filter( |(a,b)| a != b ).count();
 
     return differences;
@@ -342,7 +342,7 @@ pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     let accum2: Simd<u16,N> = accum.cast();
     matches += accum2.reduce_sum() as usize;
     //let z = m1.iter().copied().zip(m2.iter().copied());
-    //differences += p1.iter().zip(p2.iter()).filter( |(a,b)| a != b ).count();
+    matches += p1.iter().zip(p2.iter()).filter( |(a,b)| a == b ).count();
     matches += s1.iter().zip(s2.iter()).filter( |(a,b)| a == b ).count();
 
     return limit - matches;
