@@ -27,9 +27,11 @@ fn main() {
     let a2 = AlignedVec(S2.to_vec());
     let a2 = a2.get_slice();
 
-    let d = simd_alignedto_ne_hd::<16>(a1, a2);
-    println!("simd_alignedto_ne_hd: {d} of {n}"); 
+    let d = simd_aligned_ne_hd::<16>(a1, a2);
+    println!("simd_aligned_ne_hd::<16> {d} of {n}"); 
    
+    let d = simd_aligned_eq_hd::<16>(a1, a2);
+    println!("simd_aligned_eq_hd::<16> {d} of {n}"); 
 
     let n = L1.len();
     let d = scalar_hamming(L1, L2);
@@ -65,7 +67,10 @@ fn main() {
     let a2 = AlignedVec(L2.to_vec());
     let a2 = a2.get_slice();
 
-    let d = simd_alignedto_ne_hd::<32>(a1, a2);
-    println!("simd_alignedto_ne_hd: {d} of {n}"); 
+    let d = simd_aligned_ne_hd::<32>(a1, a2);
+    println!("simd_aligned_ne_hd::<32> {d} of {n}"); 
+
+    let d = simd_aligned_eq_hd::<32>(a1, a2);
+    println!("simd_aligned_eq_hd::<32> {d} of {n}"); 
 
 }

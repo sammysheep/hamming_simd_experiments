@@ -91,19 +91,19 @@ fn simd_while_ne_hd32_lg(b: &mut Bencher) {
 }
 
 #[bench]
-fn simd_alignedto_ne_hd16_lg(b: &mut Bencher) {
+fn simd_aligned_ne_hd16_lg(b: &mut Bencher) {
     let a1 = AlignedVec(L1.to_vec());
     let a1 = a1.get_slice();
 
     let a2 = AlignedVec(L2.to_vec());
     let a2 = a2.get_slice();
     b.iter(|| {
-        simd_alignedto_ne_hd::<16>(a1, a2)
+        simd_aligned_ne_hd::<16>(a1, a2)
     });
 }
 
 #[bench]
-fn simd_alignedto_ne_hd32_lg(b: &mut Bencher) {
+fn simd_aligned_ne_hd32_lg(b: &mut Bencher) {
     let a1 = AlignedVec(L1.to_vec());
     let a1 = a1.get_slice();
 
@@ -111,6 +111,31 @@ fn simd_alignedto_ne_hd32_lg(b: &mut Bencher) {
     let a2 = a2.get_slice();
 
     b.iter(|| {
-        simd_alignedto_ne_hd::<32>(a1, a2)
+        simd_aligned_ne_hd::<32>(a1, a2)
+    });
+}
+
+#[bench]
+fn simd_aligned_eq_hd16_lg(b: &mut Bencher) {
+    let a1 = AlignedVec(L1.to_vec());
+    let a1 = a1.get_slice();
+
+    let a2 = AlignedVec(L2.to_vec());
+    let a2 = a2.get_slice();
+    b.iter(|| {
+        simd_aligned_eq_hd::<16>(a1, a2)
+    });
+}
+
+#[bench]
+fn simd_aligned_eq_hd32_lg(b: &mut Bencher) {
+    let a1 = AlignedVec(L1.to_vec());
+    let a1 = a1.get_slice();
+
+    let a2 = AlignedVec(L2.to_vec());
+    let a2 = a2.get_slice();
+
+    b.iter(|| {
+        simd_aligned_eq_hd::<32>(a1, a2)
     });
 }

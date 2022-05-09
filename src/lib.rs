@@ -117,7 +117,7 @@ pub fn simd_chunk_eq_hd <const N: usize>( x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     //const N: usize = 16;
 
-    let mut differences: usize = 0;
+    let mut matches: usize = 0;
     let limit = min(x.len(),y.len());
 
     let mut x = x.chunks_exact(N * 255);
@@ -140,7 +140,7 @@ pub fn simd_chunk_eq_hd <const N: usize>( x: &[u8], y: &[u8]) -> usize
         }
             
         let accum2: Simd<u16,N> = accum.cast();
-        differences += accum2.reduce_sum() as usize;
+        matches += accum2.reduce_sum() as usize;
 
     }
    
@@ -160,13 +160,13 @@ pub fn simd_chunk_eq_hd <const N: usize>( x: &[u8], y: &[u8]) -> usize
 
     }
     let accum2: Simd<u16,N> = accum.cast();
-    differences += accum2.reduce_sum() as usize;
+    matches += accum2.reduce_sum() as usize;
 
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
-    differences += r1.iter().zip(r2).filter( |(a,b)| a == b ).count();
-    return limit - differences;
+    matches += r1.iter().zip(r2).filter( |(a,b)| a == b ).count();
+    return limit - matches;
 }
 
 pub fn simd_for_ne_hd<const N: usize>( x: &[u8], y: &[u8]) -> usize
@@ -256,7 +256,7 @@ impl AlignedVec {
 }
 
 
-pub fn simd_alignedto_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize 
+pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize 
     where LaneCount<N>: SupportedLaneCount {
 
     #[allow(unused_variables)]
@@ -299,6 +299,53 @@ pub fn simd_alignedto_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     differences += s1.iter().zip(s2.iter()).filter( |(a,b)| a != b ).count();
 
     return differences;
+}
+
+pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize 
+    where LaneCount<N>: SupportedLaneCount {
+
+    let limit = min(x.len(),y.len());
+    let mut matches: usize = 0;
+
+    #[allow(unused_variables)]
+    let (p1, m1, s1) = x.as_simd::<N>();
+    #[allow(unused_variables)]
+    let (p2, m2, s2) = y.as_simd::<N>();
+
+
+    let mut m1 = m1.chunks_exact(255);
+    let mut m2 = m2.chunks_exact(255);
+    
+    for (c1,c2) in m1.by_ref().zip(m2.by_ref()) {
+        let mut accum: Simd<u8, N> = Simd::splat(0);
+
+        for (v1, v2) in c1.iter().zip(c2) {
+            let m = v1.lanes_eq(*v2).to_int();
+            // True => -1, so - -1 => +1
+            accum -= m.cast();
+            
+        }
+        let accum2: Simd<u16,N> = accum.cast();
+        matches += accum2.reduce_sum() as usize;
+    }
+
+    let c1 = m1.remainder();
+    let c2 = m2.remainder();
+    let mut accum: Simd<u8, N> = Simd::splat(0);
+
+    for (v1, v2) in c1.iter().zip(c2) {
+        let m = v1.lanes_eq(*v2).to_int();
+        // True => -1, so - -1 => +1
+        accum -= m.cast();
+
+    }
+    let accum2: Simd<u16,N> = accum.cast();
+    matches += accum2.reduce_sum() as usize;
+    //let z = m1.iter().copied().zip(m2.iter().copied());
+    //differences += p1.iter().zip(p2.iter()).filter( |(a,b)| a != b ).count();
+    matches += s1.iter().zip(s2.iter()).filter( |(a,b)| a == b ).count();
+
+    return limit - matches;
 }
 
 
