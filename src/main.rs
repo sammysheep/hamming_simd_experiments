@@ -15,6 +15,9 @@ fn main() {
     let d = simd_chunk_ne_hd::<16>(S1, S2);
     println!("simd_chunk_ne_hd::<16>: {d} of {n}");  
 
+    let d = simd_reduce_ne_hd::<16>(S1, S2);
+    println!("simd_reduce_ne_hd::<16>: {d} of {n}");
+
     let d = simd_chunk_eq_hd::<32>(S1, S2);
     println!("simd_chunk_eq_hd::<32>: {d} of {n}");  
 
@@ -42,6 +45,9 @@ fn main() {
 
     let d = simd_chunk_ne_hd::<16>(L1, L2);
     println!("simd_chunk_ne_hd::<16>: {d} of {n}");  
+
+    let d = simd_reduce_ne_hd::<32>(L1, L2);
+    println!("simd_reduce_ne_hd::<32>: {d} of {n}");
 
     let d = simd_chunk_eq_hd::<32>(L1, L2);
     println!("simd_chunk_eq_hd::<32>: {d} of {n}");  
