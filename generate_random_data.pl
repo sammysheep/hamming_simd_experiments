@@ -1,4 +1,4 @@
-
+#!/usr/bin/env perl
 
 $s = '';
 for my $i ( 0 .. 1609 ) {
