@@ -124,7 +124,6 @@ pub fn simd_reduce_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 pub fn simd_chunk_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
-
     let mut matches: usize = 0;
     let limit = min(x.len(), y.len());
 
