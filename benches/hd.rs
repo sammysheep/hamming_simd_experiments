@@ -11,6 +11,11 @@ fn scalar_hd_lg(b: &mut Bencher) {
 }
 
 #[bench]
+fn scalar_1b_hd_lg(b: &mut Bencher) {
+    b.iter(|| scalar_hamming1b(L1, L2));
+}
+
+#[bench]
 fn intrinsic_hd_lg(b: &mut Bencher) {
     b.iter(|| intrinsic_hd(L1, L2));
 }

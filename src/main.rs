@@ -8,6 +8,9 @@ fn main() {
     let d = scalar_hamming(S1, S2);
     println!("Scalar: {d} of {n}");
 
+    let d = scalar_hamming1b(S1, S2);
+    println!("Scalar 1b: {d} of {n}");
+
     let d = simd_chunk_ne_hd::<32>(S1, S2);
     println!("simd_chunk_ne_hd::<32>: {d} of {n}");
 
@@ -38,6 +41,9 @@ fn main() {
     let n = L1.len();
     let d = scalar_hamming(L1, L2);
     println!("\nScalar: {d} of {n}");
+
+    let d = scalar_hamming1b(L1, L2);
+    println!("Scalar 1b: {d} of {n}");
 
     let d = simd_chunk_ne_hd::<32>(L1, L2);
     println!("simd_chunk_ne_hd::<32>: {d} of {n}");

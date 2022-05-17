@@ -6,6 +6,13 @@ pub fn scalar_hamming(x: &[u8], y: &[u8]) -> usize {
     x.iter().zip(y).filter(|(a, b)| a != b).count()
 }
 
+// Courtesy ScottMCM
+pub fn scalar_hamming1b(a: &[u8], b: &[u8]) -> u32 {
+    std::iter::zip(a, b)
+        .map(|(a, b)| a != b)
+        .fold(0, |a, b| a + b as u32)
+}
+
 pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let mut differences: usize = 0;
@@ -97,7 +104,7 @@ pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
-
+// Switching to u32 doesn't help
 pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let mut differences: usize = 0;
@@ -142,7 +149,7 @@ pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
-    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count();
+    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count() as usize;
     return differences;
 }
 
@@ -218,6 +225,7 @@ pub fn simd_chunk_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return limit - matches;
 }
 
+// Inspired by "triple_accel" by Daniel Liu (and portions elsewhere)
 pub fn simd_for_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let limit = min(x.len(), y.len());
