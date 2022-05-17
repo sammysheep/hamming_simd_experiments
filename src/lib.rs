@@ -2,8 +2,6 @@
 use std::cmp::min;
 use std::simd::*;
 
-// Does auto-vectorize to some extent.
-#[inline(always)]
 pub fn scalar_hamming(x: &[u8], y: &[u8]) -> usize {
     x.iter().zip(y).filter(|(a, b)| a != b).count()
 }
@@ -51,6 +49,54 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count();
     return differences;
 }
+
+pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
+    where LaneCount<N>: SupportedLaneCount {
+    let mut differences: usize = 0;
+    let ones: Simd<u8, N> = Simd::splat(1);
+    let zeros: Simd<u8, N> = Simd::splat(0);
+
+    let mut x = x.chunks_exact(N * 255);
+    let mut y = y.chunks_exact(N * 255);
+
+    for (c1, c2) in x.by_ref().zip(y.by_ref()) {
+        let mut accum: Simd<u8, N> = zeros;
+
+        let mut c1 = c1.chunks_exact(N);
+        let mut c2 = c2.chunks_exact(N);
+
+        for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
+            let v1: Simd<u8, N> = Simd::from_slice(v1);
+            let v2: Simd<u8, N> = Simd::from_slice(v2);
+            let m = v1.lanes_ne(v2);
+            accum += m.select(ones, zeros);
+        }
+
+        let accum2: Simd<u16, N> = accum.cast();
+        differences += accum2.reduce_sum() as usize;
+    }
+
+    let x = x.remainder();
+    let y = y.remainder();
+    let mut accum: Simd<u8, N> = zeros;
+    let mut c1 = x.chunks_exact(N);
+    let mut c2 = y.chunks_exact(N);
+
+    for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
+        let v1: Simd<u8, N> = Simd::from_slice(v1);
+        let v2: Simd<u8, N> = Simd::from_slice(v2);
+        let m = v1.lanes_ne(v2);
+        accum += m.select(ones, zeros);
+    }
+    let accum2: Simd<u16, N> = accum.cast();
+    differences += accum2.reduce_sum() as usize;
+
+    let r1 = c1.remainder();
+    let r2 = c2.remainder();
+    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count();
+    return differences;
+}
+
 
 pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {

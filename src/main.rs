@@ -60,6 +60,9 @@ fn main() {
     let d = simd_chunk_xor_hd::<32>(L1, L2);
     println!("simd_chunk_xor_hd::<32>: {d} of {n}");
 
+    let d = simd_chunk_select_hd::<32>(L1, L2);
+    println!("simd_chunk_select_hd::<32>: {d} of {n}");
+
     let d = simd_for_ne_hd::<32>(L1, L2);
     println!("simd_for_ne_hd::<32>: {d} of {n}");
 
