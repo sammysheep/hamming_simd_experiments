@@ -41,6 +41,17 @@ fn simd_chunk_ne_hd32_lg(b: &mut Bencher) {
 }
 
 #[bench]
+fn simd_fold_ne_hd16_lg(b: &mut Bencher) {
+    b.iter(|| simd_fold_ne_hd::<16>(L1, L2));
+}
+
+#[bench]
+fn simd_fold_ne_hd32_lg(b: &mut Bencher) {
+    b.iter(|| simd_fold_ne_hd::<32>(L1, L2));
+}
+
+
+#[bench]
 fn simd_reduce_ne_hd16_lg(b: &mut Bencher) {
     b.iter(|| simd_reduce_ne_hd::<16>(L1, L2));
 }

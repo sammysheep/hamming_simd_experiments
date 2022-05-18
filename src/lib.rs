@@ -57,6 +57,40 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
+pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
+    where LaneCount<N>: SupportedLaneCount {
+    let mut differences: usize = 0;
+
+    let mut x = x.chunks_exact(N * 255);
+    let mut y = y.chunks_exact(N * 255);
+
+    for (c1, c2) in x.by_ref().zip(y.by_ref()) {
+        let c1 = c1.chunks_exact(N);
+        let c2 = c2.chunks_exact(N);
+        differences += std::iter::zip(c1,c2)
+            .map(|(s1,s2)| Simd::from_slice(s1).lanes_ne(Simd::from_slice(s2)).to_int().cast::<u8>())
+            .fold(Simd::splat(0), |a,b| a - b )
+            .cast::<u16>() 
+            .reduce_sum() as usize;
+    }
+
+    let x = x.remainder();
+    let y = y.remainder();
+    let mut c1 = x.chunks_exact(N);
+    let mut c2 = y.chunks_exact(N);
+
+    differences += std::iter::zip(c1.by_ref(),c2.by_ref())
+    .map(|(s1,s2)| Simd::from_slice(s1).lanes_ne(Simd::from_slice(s2)).to_int().cast::<u8>())
+    .fold(Simd::splat(0), |a,b| a - b )
+    .cast::<u16>() 
+    .reduce_sum() as usize;
+
+    let r1 = c1.remainder();
+    let r2 = c2.remainder();
+    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count() as usize;
+    return differences;
+}
+
 pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let mut differences: usize = 0;
