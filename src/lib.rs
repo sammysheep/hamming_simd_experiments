@@ -155,14 +155,12 @@ pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
         for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
             let v1: Simd<u8, N> = Simd::from_slice(v1);
             let v2: Simd<u8, N> = Simd::from_slice(v2);
-            let m = v1.lanes_ne(v2).to_int();
+
             // True => -1, so - -1 => +1
-            accum -= m.cast();
-            //println!("{accum:?}");
+            accum -= v1.lanes_ne(v2).to_int().cast::<u8>();
         }
 
-        let accum2: Simd<u16, N> = accum.cast();
-        differences += accum2.reduce_sum() as usize;
+        differences += accum.cast::<u16>().reduce_sum() as usize;
     }
 
     let x = x.remainder();
@@ -174,12 +172,10 @@ pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
         let v1: Simd<u8, N> = Simd::from_slice(v1);
         let v2: Simd<u8, N> = Simd::from_slice(v2);
-        let m = v1.lanes_ne(v2).to_int();
         // True => -1, so - -1 => +1
-        accum -= m.cast();
+        accum -= v1.lanes_ne(v2).to_int().cast::<u8>();
     }
-    let accum2: Simd<u16, N> = accum.cast();
-    differences += accum2.reduce_sum() as usize;
+    differences += accum.cast::<u16>().reduce_sum() as usize;
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
