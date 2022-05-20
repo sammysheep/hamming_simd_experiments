@@ -57,6 +57,7 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
+// Needs more cowbell, err, functional style
 pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let mut differences: usize = 0;
@@ -138,7 +139,7 @@ pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
-// Switching to u32 doesn't help
+// Switching to u32 return type doesn't help
 pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let mut differences: usize = 0;
