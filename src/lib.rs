@@ -29,7 +29,7 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
         for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
             let v1: Simd<u8, N> = Simd::from_slice(v1);
             let v2: Simd<u8, N> = Simd::from_slice(v2);
-            accum += ones.min(v1 ^ v2);
+            accum += ones.simd_min(v1 ^ v2);
         }
 
         let accum2: Simd<u16, N> = accum.cast();
@@ -45,7 +45,7 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     for (v1, v2) in c1.by_ref().zip(c2.by_ref()) {
         let v1: Simd<u8, N> = Simd::from_slice(v1);
         let v2: Simd<u8, N> = Simd::from_slice(v2);
-        accum += ones.min(v1 ^ v2);
+        accum += ones.simd_min(v1 ^ v2);
     }
     let accum2: Simd<u16, N> = accum.cast();
     differences += accum2.reduce_sum() as usize;
