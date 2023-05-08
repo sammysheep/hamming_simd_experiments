@@ -24,25 +24,14 @@ pub fn simd_chunk_ne_hd32_lg(c: &mut Criterion) {
 }
 
 pub fn simd_aligned_ne_hd16_lg(c: &mut Criterion) {
-    let a1 = AlignedVec(L1.to_vec());
-    let a1 = a1.get_slice();
-
-    let a2 = AlignedVec(L2.to_vec());
-    let a2 = a2.get_slice();
     c.bench_function("simd_aligned_ne_hd16_lg", |b| {
-         b.iter(|| simd_aligned_ne_hd::<16>(a1, a2))
+         b.iter(|| simd_aligned_ne_hd::<16>(L1, L2))
      });
 }
 
 pub fn simd_aligned_ne_hd32_lg(c: &mut Criterion) {
-    let a1 = AlignedVec(L1.to_vec());
-    let a1 = a1.get_slice();
-
-    let a2 = AlignedVec(L2.to_vec());
-    let a2 = a2.get_slice();
-
     c.bench_function("simd_aligned_ne_hd32_lg", |b| {
-         b.iter(|| simd_aligned_ne_hd::<32>(a1, a2))
+         b.iter(|| simd_aligned_ne_hd::<32>(L1, L2))
      });
 }
 

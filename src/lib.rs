@@ -335,18 +335,13 @@ pub fn simd_while_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
-#[repr(C, align(64))]
-pub struct AlignedVec(pub Vec<u8>);
-impl AlignedVec {
-    pub fn get_slice(&self) -> &[u8] {
-        self.0.as_slice()
-    }
-}
-
+// Requires both vectors to have the same alignment
 pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let (p1, m1, s1) = x.as_simd::<N>();
     let (p2, m2, s2) = y.as_simd::<N>();
+
+    assert_eq!(p1.len(), p2.len());
 
     let mut m1 = m1.chunks_exact(255);
     let mut m2 = m2.chunks_exact(255);
@@ -381,6 +376,7 @@ pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
+// Requires both vectors to have the same alignment
 pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let limit = min(x.len(), y.len());
@@ -388,6 +384,8 @@ pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
     let (p1, m1, s1) = x.as_simd::<N>();
     let (p2, m2, s2) = y.as_simd::<N>();
+
+    assert_eq!(p1.len(), p2.len());
 
     let mut m1 = m1.chunks_exact(255);
     let mut m2 = m2.chunks_exact(255);
