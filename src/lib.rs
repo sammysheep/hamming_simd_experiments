@@ -335,14 +335,6 @@ pub fn simd_while_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     return differences;
 }
 
-#[repr(C, align(64))]
-pub struct AlignedVec(pub Vec<u8>);
-impl AlignedVec {
-    pub fn get_slice(&self) -> &[u8] {
-        self.0.as_slice()
-    }
-}
-
 pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     where LaneCount<N>: SupportedLaneCount {
     let (p1, m1, s1) = x.as_simd::<N>();
