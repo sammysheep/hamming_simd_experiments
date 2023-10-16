@@ -119,3 +119,8 @@ fn simd_aligned_eq_hd16_lg(b: &mut Bencher) {
 fn simd_aligned_eq_hd32_lg(b: &mut Bencher) {
     b.iter(|| simd_aligned_eq_hd::<32>(L1, L2));
 }
+
+#[bench]
+fn simd_aligned_eq_hd64_lg(b: &mut Bencher) {
+    b.iter(|| simd_aligned_eq_hd::<64>(L1, L2));
+}
