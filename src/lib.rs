@@ -341,8 +341,9 @@ pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     let (p1, m1, s1) = x.as_simd::<N>();
     let (p2, m2, s2) = y.as_simd::<N>();
 
-    assert_eq!(p1.len(), p2.len());
-
+    if p1.len() != p2.len() {
+        return simd_chunk_ne_hd(x, y);
+    }
     let mut m1 = m1.chunks_exact(255);
     let mut m2 = m2.chunks_exact(255);
     let mut differences: usize = 0;
@@ -385,7 +386,9 @@ pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     let (p1, m1, s1) = x.as_simd::<N>();
     let (p2, m2, s2) = y.as_simd::<N>();
 
-    assert_eq!(p1.len(), p2.len());
+    if p1.len() != p2.len() {
+        return simd_chunk_eq_hd(x, y);
+    }
 
     let mut m1 = m1.chunks_exact(255);
     let mut m2 = m2.chunks_exact(255);
