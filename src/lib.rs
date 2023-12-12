@@ -1,6 +1,6 @@
 #![feature(portable_simd)]
 use std::cmp::min;
-use std::simd::*;
+use std::simd::{prelude::*, LaneCount, SupportedLaneCount};
 
 pub fn scalar_hamming(x: &[u8], y: &[u8]) -> usize {
     x.iter().zip(y).filter(|(a, b)| a != b).count()
