@@ -4,8 +4,10 @@ name = "hamming"
 version = "0.1.0"
 
 [dependencies]
-criterion = "0.3.5"
 triple_accel = "*"
+
+[dev-dependencies]
+criterion = "*"
 
 [[bench]]
 name = "criterion"
