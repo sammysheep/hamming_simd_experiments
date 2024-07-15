@@ -8,12 +8,12 @@ pub fn scalar_hamming(x: &[u8], y: &[u8]) -> usize {
 
 // Courtesy ScottMCM
 pub fn scalar_hamming1b(a: &[u8], b: &[u8]) -> u32 {
-    std::iter::zip(a, b).map(|(a, b)| a != b)
-                        .fold(0, |a, b| a + b as u32)
+    std::iter::zip(a, b).map(|(a, b)| a != b).fold(0, |a, b| a + b as u32)
 }
 
 pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut differences: usize = 0;
     let ones: Simd<u8, N> = Simd::splat(1);
 
@@ -58,7 +58,8 @@ pub fn simd_chunk_xor_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 // Needs more cowbell, err, functional style
 pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut differences: usize = 0;
 
     let mut x = x.chunks_exact(N * 255);
@@ -67,14 +68,11 @@ pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     for (c1, c2) in x.by_ref().zip(y.by_ref()) {
         let c1 = c1.chunks_exact(N);
         let c2 = c2.chunks_exact(N);
-        differences += std::iter::zip(c1, c2).map(|(s1, s2)| {
-                                                 Simd::from_slice(s1).simd_ne(Simd::from_slice(s2))
-                                                                     .to_int()
-                                                                     .cast::<u8>()
-                                             })
-                                             .fold(Simd::splat(0), |a, b| a - b)
-                                             .cast::<u16>()
-                                             .reduce_sum() as usize;
+        differences += std::iter::zip(c1, c2)
+            .map(|(s1, s2)| Simd::from_slice(s1).simd_ne(Simd::from_slice(s2)).to_int().cast::<u8>())
+            .fold(Simd::splat(0), |a, b| a - b)
+            .cast::<u16>()
+            .reduce_sum() as usize;
     }
 
     let x = x.remainder();
@@ -82,14 +80,11 @@ pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
     let mut c1 = x.chunks_exact(N);
     let mut c2 = y.chunks_exact(N);
 
-    differences += std::iter::zip(c1.by_ref(), c2.by_ref()).map(|(s1, s2)| {
-                       Simd::from_slice(s1).simd_ne(Simd::from_slice(s2))
-                                           .to_int()
-                                           .cast::<u8>()
-                   })
-                   .fold(Simd::splat(0), |a, b| a - b)
-                   .cast::<u16>()
-                   .reduce_sum() as usize;
+    differences += std::iter::zip(c1.by_ref(), c2.by_ref())
+        .map(|(s1, s2)| Simd::from_slice(s1).simd_ne(Simd::from_slice(s2)).to_int().cast::<u8>())
+        .fold(Simd::splat(0), |a, b| a - b)
+        .cast::<u16>()
+        .reduce_sum() as usize;
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
@@ -98,7 +93,8 @@ pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 }
 
 pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut differences: usize = 0;
     let ones: Simd<u8, N> = Simd::splat(1);
     let zeros: Simd<u8, N> = Simd::splat(0);
@@ -146,7 +142,8 @@ pub fn simd_chunk_select_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 // Switching to u32 return type doesn't help
 pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut differences: usize = 0;
 
     let mut x = x.chunks_exact(N * 255);
@@ -190,7 +187,8 @@ pub fn simd_chunk_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 }
 
 pub fn simd_reduce_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut differences: usize = 0;
 
     let mut x = x.chunks_exact(N);
@@ -212,7 +210,8 @@ pub fn simd_reduce_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 }
 
 pub fn simd_chunk_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let mut matches: usize = 0;
     let limit = min(x.len(), y.len());
 
@@ -263,7 +262,8 @@ pub fn simd_chunk_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 // Inspired by "triple_accel" by Daniel Liu (and portions elsewhere)
 pub fn simd_for_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let limit = min(x.len(), y.len());
     let refresh_len = limit / (255 * N);
     let mut differences: usize = 0;
@@ -303,7 +303,8 @@ pub fn simd_for_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 }
 
 pub fn simd_while_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let limit = min(x.len(), y.len());
     let mut differences: usize = 0;
 
@@ -337,7 +338,8 @@ pub fn simd_while_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 // Requires both vectors to have the same alignment
 pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let (p1, m1, s1) = x.as_simd::<N>();
     let (p2, m2, s2) = y.as_simd::<N>();
 
@@ -379,7 +381,8 @@ pub fn simd_aligned_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 
 // Requires both vectors to have the same alignment
 pub fn simd_aligned_eq_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
-    where LaneCount<N>: SupportedLaneCount {
+where
+    LaneCount<N>: SupportedLaneCount, {
     let limit = min(x.len(), y.len());
     let mut matches: usize = 0;
 

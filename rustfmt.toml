@@ -1,4 +1,6 @@
-struct_field_align_threshold=20
-brace_style="PreferSameLine"
-indent_style="Visual"
-
+fn_args_layout = "Compressed"
+fn_params_layout = "Compressed"
+comment_width = 100
+max_width = 125
+struct_field_align_threshold = 20
+brace_style = "PreferSameLine"
