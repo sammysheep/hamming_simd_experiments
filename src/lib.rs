@@ -281,7 +281,7 @@ where
         differences += accum2.reduce_sum() as usize;
     }
 
-    let word_len = limit >> 5;
+    let word_len = limit / N;
     let mut accum: Simd<u8, N> = Simd::splat(0);
     for i in (refresh_len * 255)..word_len {
         let v1: Simd<u8, N> = Simd::from_slice(&x[i * N..]);
