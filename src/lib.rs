@@ -57,6 +57,23 @@ where
     return differences;
 }
 
+pub fn simd_chunk_bitmask_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
+where
+    LaneCount<N>: SupportedLaneCount, {
+    let mut differences: usize = 0;
+
+    let mut x = x.chunks_exact(N);
+    let mut y = y.chunks_exact(N);
+
+    for (c1, c2) in x.by_ref().map(Simd::from_slice).zip(y.by_ref().map(Simd::from_slice)) {
+        differences += c1.simd_ne(c2).to_bitmask().count_ones() as usize;
+    }
+
+    let r1 = x.remainder();
+    let r2 = y.remainder();
+    differences + r1.iter().zip(r2).filter(|(a, b)| a != b).count()
+}
+
 // Needs more cowbell, err, functional style
 pub fn simd_fold_ne_hd<const N: usize>(x: &[u8], y: &[u8]) -> usize
 where

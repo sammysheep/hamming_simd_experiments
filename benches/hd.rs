@@ -89,6 +89,16 @@ fn simd_chunk_xor_hd32_lg(b: &mut Bencher) {
 }
 
 #[bench]
+fn simd_chunk_bitmask_hd16_lg(b: &mut Bencher) {
+    b.iter(|| simd_chunk_bitmask_hd::<16>(L1, L2));
+}
+
+#[bench]
+fn simd_chunk_bitmask_hd32_lg(b: &mut Bencher) {
+    b.iter(|| simd_chunk_bitmask_hd::<32>(L1, L2));
+}
+
+#[bench]
 fn simd_for_ne_hd16_lg(b: &mut Bencher) {
     b.iter(|| simd_for_ne_hd::<16>(L1, L2));
 }

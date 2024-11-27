@@ -89,3 +89,13 @@ fn for_while() {
     let d = simd_while_ne_hd::<32>(L1, L2);
     assert!(n == d);
 }
+
+#[test]
+fn bitmask() {
+    let n = scalar_hamming(L1, L2);
+
+    let d = simd_chunk_bitmask_hd::<16>(L1, L2);
+    assert_eq!(n, d);
+    let d = simd_chunk_bitmask_hd::<32>(L1, L2);
+    assert_eq!(n, d);
+}
