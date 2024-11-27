@@ -1,4 +1,5 @@
 #![feature(test)]
+use simsimd::BinarySimilarity;
 use triple_accel::hamming::hamming as intrinsic_hd;
 
 extern crate test;
@@ -18,6 +19,13 @@ fn scalar_1b_hd_lg(b: &mut Bencher) {
 #[bench]
 fn intrinsic_hd_lg(b: &mut Bencher) {
     b.iter(|| intrinsic_hd(L1, L2));
+}
+
+#[bench]
+fn intrinsic2_hd_lg(b: &mut Bencher) {
+    let l1 = L1.as_slice();
+    let l2 = L2.as_slice();
+    b.iter(|| BinarySimilarity::hamming(l1, l2));
 }
 
 #[bench]

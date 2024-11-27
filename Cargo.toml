@@ -4,11 +4,12 @@ name = "hamming"
 version = "0.1.0"
 
 [dependencies]
-triple_accel = "*"
 
 [dev-dependencies]
 criterion = "*"
+simsimd = "6.2.1"
+triple_accel = "*"
 
 [[bench]]
-name = "criterion"
 harness = false
+name = "criterion"

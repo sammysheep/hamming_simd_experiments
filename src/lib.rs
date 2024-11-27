@@ -1,4 +1,5 @@
 #![feature(portable_simd)]
+#![allow(clippy::needless_return)]
 use std::cmp::min;
 use std::simd::{prelude::*, LaneCount, SupportedLaneCount};
 
@@ -88,7 +89,7 @@ where
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
-    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count() as usize;
+    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count();
     return differences;
 }
 
@@ -182,7 +183,7 @@ where
 
     let r1 = c1.remainder();
     let r2 = c2.remainder();
-    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count() as usize;
+    differences += r1.iter().zip(r2).filter(|(a, b)| a != b).count();
     return differences;
 }
 
