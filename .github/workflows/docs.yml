@@ -34,7 +34,10 @@ jobs:
           rustup update nightly --no-self-update
           rustup default nightly
       - name: Build Documentation
-        run: cargo doc --no-deps
+        run: |
+          cargo doc --no-deps
+          echo '<meta http-equiv="refresh" content="0; url=hamming/index.html">' > target/doc/index.html
+
       - name: Upload artifact
         uses: actions/upload-pages-artifact@v3
         with:

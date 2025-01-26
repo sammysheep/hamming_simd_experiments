@@ -1,7 +1,7 @@
 #![feature(portable_simd)]
 #![allow(clippy::needless_return)]
 use std::cmp::min;
-use std::simd::{prelude::*, LaneCount, SupportedLaneCount};
+use std::simd::{LaneCount, SupportedLaneCount, prelude::*};
 
 pub fn scalar_hamming(x: &[u8], y: &[u8]) -> usize {
     x.iter().zip(y).filter(|(a, b)| a != b).count()

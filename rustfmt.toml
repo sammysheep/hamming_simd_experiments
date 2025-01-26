@@ -1,6 +1,5 @@
-fn_args_layout = "Compressed"
-fn_params_layout = "Compressed"
+brace_style = "PreferSameLine"
 comment_width = 100
+fn_params_layout = "Compressed"
 max_width = 125
 struct_field_align_threshold = 20
-brace_style = "PreferSameLine"

@@ -1,42 +1,45 @@
 # Some example benchmarks.
 
-Anecdotal benchmark on an Intel Core i7 (I7-4870HQ) running MacOS 11.6.8; we used rustc 1.65.0-nightly (060e47f74 2022-08-23) with no target specified. A subet of benches were done on Criterion and then all tests were done using Bencher.
+## arm64
+
+Anecdotal benchmark on an M4 Max running MacOS 15.2 and using rustc 1.86.0-nightly (48a426eca 2025-01-12).
 
 ```
-     Running benches/criterion.rs (target/release/deps/criterion-f76d36f5f1c350fb)
+running 27 tests
+test intrinsic2_hd_lg           ... bench:         177.77 ns/iter (+/- 12.65)
+test intrinsic_hd_lg            ... bench:         519.88 ns/iter (+/- 4.71)
+test scalar_1b_hd_lg            ... bench:         521.44 ns/iter (+/- 76.62)
+test scalar_hd_lg               ... bench:       1,049.39 ns/iter (+/- 23.20)
+test simd_aligned_eq_hd16_lg    ... bench:         201.66 ns/iter (+/- 3.59)
+test simd_aligned_eq_hd32_lg    ... bench:         124.62 ns/iter (+/- 4.36)
+test simd_aligned_eq_hd64_lg    ... bench:         105.32 ns/iter (+/- 6.36)
+test simd_aligned_ne_hd16_lg    ... bench:         206.80 ns/iter (+/- 3.78)
+test simd_aligned_ne_hd32_lg    ... bench:         131.18 ns/iter (+/- 10.65)
+test simd_chunk_bitmask_hd16_lg ... bench:         317.46 ns/iter (+/- 18.80)
+test simd_chunk_bitmask_hd32_lg ... bench:         260.78 ns/iter (+/- 15.62)
+test simd_chunk_eq_hd16_lg      ... bench:         202.00 ns/iter (+/- 7.92)
+test simd_chunk_eq_hd32_lg      ... bench:         124.85 ns/iter (+/- 4.10)
+test simd_chunk_ne_hd16_lg      ... bench:         204.53 ns/iter (+/- 2.83)
+test simd_chunk_ne_hd32_lg      ... bench:         131.93 ns/iter (+/- 8.36)
+test simd_chunk_select_hd16_lg  ... bench:         206.18 ns/iter (+/- 3.35)
+test simd_chunk_select_hd32_lg  ... bench:         132.33 ns/iter (+/- 8.73)
+test simd_chunk_xor_hd16_lg     ... bench:         205.12 ns/iter (+/- 3.01)
+test simd_chunk_xor_hd32_lg     ... bench:         130.54 ns/iter (+/- 9.21)
+test simd_fold_ne_hd16_lg       ... bench:         196.27 ns/iter (+/- 2.84)
+test simd_fold_ne_hd32_lg       ... bench:         133.03 ns/iter (+/- 7.87)
+test simd_for_ne_hd16_lg        ... bench:         301.71 ns/iter (+/- 12.50)
+test simd_for_ne_hd32_lg        ... bench:         186.86 ns/iter (+/- 9.82)
+test simd_reduce_ne_hd16_lg     ... bench:         310.61 ns/iter (+/- 12.30)
+test simd_reduce_ne_hd32_lg     ... bench:         258.99 ns/iter (+/- 11.95)
+test simd_while_ne_hd16_lg      ... bench:         211.52 ns/iter (+/- 4.09)
+test simd_while_ne_hd32_lg      ... bench:         154.79 ns/iter (+/- 10.68)
+```
 
-Gnuplot not found, using plotters backend
-scalar_hd_lg            time:   [3.5466 us 3.5573 us 3.5694 us]                          
-Found 7 outliers among 100 measurements (7.00%)
-  2 (2.00%) high mild
-  5 (5.00%) high severe
+## x86-64
 
-intrinsic_hd_lg         time:   [152.99 ns 153.53 ns 154.11 ns]                            
-Found 6 outliers among 100 measurements (6.00%)
-  3 (3.00%) high mild
-  3 (3.00%) high severe
+Anecdotal benchmark on an Intel Core i7 (I7-4870HQ) running MacOS 11.6.8; we used rustc 1.65.0-nightly (060e47f74 2022-08-23) with no target specified.
 
-simd_chunk_ne_hd16_lg   time:   [269.34 ns 270.32 ns 271.41 ns]                                  
-Found 18 outliers among 100 measurements (18.00%)
-  7 (7.00%) high mild
-  11 (11.00%) high severe
-
-simd_chunk_ne_hd32_lg   time:   [1.2647 us 1.2864 us 1.3144 us]                                   
-Found 2 outliers among 100 measurements (2.00%)
-  1 (1.00%) high mild
-  1 (1.00%) high severe
-
-simd_aligned_ne_hd16_lg time:   [214.11 ns 215.13 ns 216.32 ns]                                    
-Found 12 outliers among 100 measurements (12.00%)
-  12 (12.00%) high mild
-
-simd_aligned_ne_hd32_lg time:   [200.37 ns 202.22 ns 204.26 ns]                                    
-Found 3 outliers among 100 measurements (3.00%)
-  1 (1.00%) high mild
-  2 (2.00%) high severe
-
-     Running benches/hd.rs (target/release/deps/hd-7f0151760682294c)
-
+```
 running 23 tests
 test intrinsic_hd_lg           ... bench:         164 ns/iter (+/- 17)
 test scalar_1b_hd_lg           ... bench:       1,441 ns/iter (+/- 220)
@@ -64,52 +67,7 @@ test simd_while_ne_hd32_lg     ... bench:       1,285 ns/iter (+/- 145)
 ```
 
 Targeting "Haswell" architecture (similar results seen targeting "x86-64-v3" on more recent equipment):
-
 ```
-     Running benches/criterion.rs (target/release/deps/criterion-f76d36f5f1c350fb)
-
-Gnuplot not found, using plotters backend
-scalar_hd_lg            time:   [1.2909 us 1.3046 us 1.3191 us]                          
-                        change: [-63.856% -63.555% -63.219%] (p = 0.00 < 0.05)
-                        Performance has improved.
-Found 7 outliers among 100 measurements (7.00%)
-  7 (7.00%) high mild
-
-intrinsic_hd_lg         time:   [151.89 ns 152.49 ns 153.22 ns]                            
-                        change: [-0.1129% +1.0657% +2.2822%] (p = 0.08 > 0.05)
-                        No change in performance detected.
-Found 16 outliers among 100 measurements (16.00%)
-  7 (7.00%) high mild
-  9 (9.00%) high severe
-
-simd_chunk_ne_hd16_lg   time:   [255.24 ns 258.42 ns 262.09 ns]                                  
-                        change: [-5.7034% -4.7691% -3.7817%] (p = 0.00 < 0.05)
-                        Performance has improved.
-Found 1 outliers among 100 measurements (1.00%)
-  1 (1.00%) high severe
-
-simd_chunk_ne_hd32_lg   time:   [1.2782 us 1.2927 us 1.3085 us]                                   
-                        change: [+0.2555% +1.8604% +3.3418%] (p = 0.02 < 0.05)
-                        Change within noise threshold.
-Found 1 outliers among 100 measurements (1.00%)
-  1 (1.00%) high mild
-
-simd_aligned_ne_hd16_lg time:   [206.11 ns 207.20 ns 208.43 ns]                                    
-                        change: [-4.8481% -3.9852% -3.1024%] (p = 0.00 < 0.05)
-                        Performance has improved.
-Found 11 outliers among 100 measurements (11.00%)
-  8 (8.00%) high mild
-  3 (3.00%) high severe
-
-simd_aligned_ne_hd32_lg time:   [115.30 ns 116.43 ns 117.73 ns]                                    
-                        change: [-42.603% -41.834% -41.076%] (p = 0.00 < 0.05)
-                        Performance has improved.
-Found 14 outliers among 100 measurements (14.00%)
-  12 (12.00%) high mild
-  2 (2.00%) high severe
-
-     Running benches/hd.rs (target/release/deps/hd-7f0151760682294c)
-
 running 23 tests
 test intrinsic_hd_lg           ... bench:         176 ns/iter (+/- 19)
 test scalar_1b_hd_lg           ... bench:         692 ns/iter (+/- 103)

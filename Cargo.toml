@@ -1,7 +1,14 @@
 [package]
-edition = "2021"
-name = "hamming"
+edition = "2024"
+name = "hamming_distance_experiments"
 version = "0.1.0"
+
+[[bin]]
+name = "hamming_main"
+path = "src/main.rs"
+
+[lib]
+name = "hamming"
 
 [dependencies]
 

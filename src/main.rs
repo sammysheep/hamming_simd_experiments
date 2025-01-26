@@ -1,6 +1,3 @@
-#![feature(portable_simd)]
-//use std::simd::*;
-//use std::cmp::min;
 use hamming::*;
 
 fn main() {
